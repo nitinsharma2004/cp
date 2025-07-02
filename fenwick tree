@@ -1,0 +1,53 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class FenwickTree {
+    vector<int> bit;
+    int n;
+
+public:
+    FenwickTree(int size) {
+        n = size;
+        bit.assign(n + 1, 0); // 1-based indexing
+    }
+
+    // Add val to index i (1-based)
+    void update(int i, int val) {
+        while (i <= n) {
+            bit[i] += val;
+            i += (i & -i);
+        }
+    }
+
+    // Prefix sum from 1 to i
+    int prefix_sum(int i) {
+        int result = 0;
+        while (i > 0) {
+            result += bit[i];
+            i -= (i & -i);
+        }
+        return result;
+    }
+
+    // Range sum from l to r (1-based)
+    int range_sum(int l, int r) {
+        return prefix_sum(r) - prefix_sum(l - 1);
+    }
+};
+
+int main() {
+    vector<int> arr = {0, 1, 2, 3, 4, 5}; // 1-based indexing, arr[0] is dummy
+    int n = arr.size() - 1;
+
+    FenwickTree ft(n);
+    for (int i = 1; i <= n; i++) {
+        ft.update(i, arr[i]);
+    }
+
+    cout << "Sum(2, 5): " << ft.range_sum(2, 5) << endl; // 2+3+4+5 = 14
+    ft.update(3, 2); // arr[3] += 2 -> arr[3] = 5
+    cout << "Sum(2, 5) after update: " << ft.range_sum(2, 5) << endl; // 2+5+4+5 = 16
+
+    return 0;
+}
