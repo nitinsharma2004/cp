@@ -1,4 +1,4 @@
-//Approach-2 (KMP Algorithm)
+ (KMP Algorithm)
 //T.C : O(m+n)
 //S.C : O(m) where m is the length of pattern
 class Solution
