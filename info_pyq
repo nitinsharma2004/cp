@@ -1,0 +1,60 @@
+/* 
+Given array and max_diff ,mean,div,min_len
+Find maximum subarray sum whose length is greater than equal to min_len,and difference between adjacent is max_diff, average equal to mean and subarral leftmost and rightmost product is divisible by div
+*/
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+
+    vector<long long> a(n);
+    for (int i = 0; i < n; i++) cin >> a[i];
+
+    long long max_diff, mean, div;
+    int min_len;
+    cin >> max_diff >> mean >> div >> min_len;
+
+    long long ans = LLONG_MIN;
+    bool found = false;
+
+    int i = 0;
+    while (i < n) {
+        int start = i;
+
+        // build valid segment
+        while (i + 1 < n && llabs(a[i + 1] - a[i]) <= max_diff)
+            i++;
+
+        unordered_map<long long, int> mp;
+        long long pref = 0;
+        mp[0] = start - 1;
+
+        for (int r = start; r <= i; r++) {
+            pref += (a[r] - mean);
+
+            if (mp.count(pref)) {
+                int l = mp[pref] + 1;
+                int len = r - l + 1;
+
+                if (len >= min_len && (a[l] * a[r]) % div == 0) {
+                    ans = max(ans, mean * len);
+                    found = true;
+                }
+            } else {
+                mp[pref] = r;
+            }
+        }
+        i++;
+    }
+
+    cout << (found ? ans : -1);
+    return 0;
+}
